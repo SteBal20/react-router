@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { QuoteType } from "../../models/quote.types";
 import classes from "./QuoteItem.module.css";
 
@@ -10,9 +11,9 @@ const QuoteItem: React.FC<QuoteType> = (props) => {
         </blockquote>
         <figcaption>{props.author}</figcaption>
       </figure>
-      <a className="btn" href="/">
+      <Link className="btn" to={`/quotes/${props.id}`}>
         View Fullscreen
-      </a>
+      </Link>
     </li>
   );
 };
