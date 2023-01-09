@@ -1,4 +1,5 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
+import { usePrompt } from "../../hooks/usePrompt";
 import { QuoteType } from "../../models/quote.types";
 
 import Card from "../UI/Card";
@@ -9,6 +10,8 @@ const QuoteForm: React.FC<{
   isLoading: boolean;
   onAddQuote: (quote: QuoteType) => void;
 }> = (props) => {
+  const [isEntering, setIsEntering] = useState(false);
+
   const authorInputRef =
     useRef<HTMLInputElement>() as React.MutableRefObject<HTMLInputElement>;
   const textInputRef =
@@ -25,9 +28,26 @@ const QuoteForm: React.FC<{
     props.onAddQuote({ author: enteredAuthor, text: enteredText });
   }
 
+  const finishEnteringHandler = () => {
+    setIsEntering(false);
+  };
+
+  const formFocusedHandler = () => {
+    setIsEntering(true);
+  };
+
+  usePrompt(
+    "Are you sure you want to leave? All your entered data will be lost!",
+    isEntering
+  );
+
   return (
     <Card>
-      <form className={classes.form} onSubmit={submitFormHandler}>
+      <form
+        onFocus={formFocusedHandler}
+        className={classes.form}
+        onSubmit={submitFormHandler}
+      >
         {props.isLoading && (
           <div className={classes.loading}>
             <LoadingSpinner />
@@ -43,7 +63,9 @@ const QuoteForm: React.FC<{
           <textarea id="text" rows={5} ref={textInputRef}></textarea>
         </div>
         <div className={classes.actions}>
-          <button className="btn">Add Quote</button>
+          <button onClick={finishEnteringHandler} className="btn">
+            Add Quote
+          </button>
         </div>
       </form>
     </Card>
